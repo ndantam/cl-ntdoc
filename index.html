@@ -6,11 +6,12 @@
   <title>NTDOC - A Documentation Generator</title>
   <style type="text/css">
   pre { padding:5px; background-color:#e0e0e0 }
+  body { font-family: sans; background-color: white;}
   h3, h4 { text-decoration: underline; }
-  a { text-decoration: none; padding: 1px 2px 1px 2px; }
-  a:visited { text-decoration: none; padding: 1px 2px 1px 2px; }
-  a:hover { text-decoration: none; padding: 1px 1px 1px 1px; border: 1px solid #000000; }
-  a:focus { text-decoration: none; padding: 1px 2px 1px 2px; border: none; }
+  a { text-decoration: none; }
+  a:visited { text-decoration: color: purple;}
+  a:hover { text-decoration: underline; }
+  a:focus { text-decoration: none; padding: }
   a.none { text-decoration: none; padding: 0; }
   a.none:visited { text-decoration: none; padding: 0; }
   a.none:hover { text-decoration: none; border: none; padding: 0; }
@@ -20,8 +21,9 @@
   a.noborder:hover { text-decoration: none; border: none; padding: 0; }
   a.noborder:focus { text-decoration: none; border: none; padding: 0; }
   pre.none { padding:5px; background-color:#ffffff }
+  span.download { color: green; }
   </style>
-</head><body bgcolor=white>
+</head><body>
 
 <h2> NTDOC - A Documentation Generator</h2>
 
@@ -29,7 +31,7 @@
 <br>&nbsp;<br><h3><a name=abstract class=none>Abstract</a></h3>
 <p>NTDOC generates documentation for a Common Lisp package via
 introspection, extracting metadata from the corresponding ASDF system.
-It is based on DOCUMENTATION-TEMPLATE by Edi Weitz.</p>NTDOC is available under the <a href="http://opensource.org/licenses/BSD-3-Clause">3-Clause BSD license</a>.<p> <font color='green'>Download Source:</font> <code>git clone <a href="https://github.com/ndantam/cl-ntdoc">https://github.com/ndantam/cl-ntdoc</a></code></blockquote><br>&nbsp;<br><h3><a class=none name="contents">Contents</a></h3>
+It is based on DOCUMENTATION-TEMPLATE by Edi Weitz.</p>NTDOC is available under the <a href="http://opensource.org/licenses/BSD-3-Clause">3-Clause BSD license</a>.<p> <span class='download'>Download Source:</span> <code>git clone <a href="https://github.com/ndantam/cl-ntdoc">https://github.com/ndantam/cl-ntdoc</a></code></blockquote><br>&nbsp;<br><h3><a class=none name="contents">Contents</a></h3>
 <ol>
   <li><a href="#dictionary">The NTDOC dictionary</a>
     <ol>
