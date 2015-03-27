@@ -229,11 +229,12 @@ symbols with links."
   <title>~A - ~A</title>
   <style type=\"text/css\">
   pre { padding:5px; background-color:#e0e0e0 }
+  body { font-family: sans; background-color: white;}
   h3, h4 { text-decoration: underline; }
-  a { text-decoration: none; padding: 1px 2px 1px 2px; }
-  a:visited { text-decoration: none; padding: 1px 2px 1px 2px; }
-  a:hover { text-decoration: none; padding: 1px 1px 1px 1px; border: 1px solid #000000; }
-  a:focus { text-decoration: none; padding: 1px 2px 1px 2px; border: none; }
+  a { text-decoration: none; }
+  a:visited { text-decoration: color: purple;}
+  a:hover { text-decoration: underline; }
+  a:focus { text-decoration: none; padding: }
   a.none { text-decoration: none; padding: 0; }
   a.none:visited { text-decoration: none; padding: 0; }
   a.none:hover { text-decoration: none; border: none; padding: 0; }
@@ -243,11 +244,12 @@ symbols with links."
   a.noborder:hover { text-decoration: none; border: none; padding: 0; }
   a.noborder:focus { text-decoration: none; border: none; padding: 0; }
   pre.none { padding:5px; background-color:#ffffff }
+  span.download { color: green; }
   </style>
 </head>" package-name subtitle)
 
   ;; Abstract
-  (format t "<body bgcolor=white>
+  (format t "<body>
 
 <h2> ~A - ~A</h2>
 
@@ -260,7 +262,7 @@ symbols with links."
     (multiple-value-bind (name url) (license-info license)
       (format t "~A is available under the <a href=\"~A\">~A license</a>." package-name url name)))
   (when repository
-    (format t "<p> <font color='green'>Download Source:</font> <code>git clone <a href=\"~A\">~A</a></code>"
+    (format t "<p> <span class='download'>Download Source:</span> <code>git clone <a href=\"~A\">~A</a></code>"
             repository-link repository))
 
   (format t "</blockquote>")
