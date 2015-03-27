@@ -275,21 +275,20 @@ current version is 0.1.0.
           package-name subtitle (string-downcase package-name)
           package-name symbols))
 
-(defun write-page-footer ()
+(defun write-page-footer (&key (homepage *homepage*))
   "Writes the footer of the HTML page."
-  (write-string "
+  (format t "
 
 <br>&nbsp;<br><h3><a class=none name=\"ack\">Acknowledgements</a></h3>
 
 <p>
 This documentation was prepared with <a href=\"http://weitz.de/documentation-template/\">DOCUMENTATION-TEMPLATE</a>.
 </p>
-<p>
-$Header: /usr/local/cvsrep/documentation-template/output.lisp,v 1.19 2014-11-23 12:12:59 edi Exp $
-<p><a href=\"http://weitz.de/index.html\">BACK TO MY HOMEPAGE</a>
+~@[<p><a href=\"~A\">BACK TO MY HOMEPAGE</a></p>~]
 
 </body>
-</html>"))
+</html>"
+homepage))
 
 (defun create-template (package &key (target (or *target*
                                                  #-:lispworks (error "*TARGET* not specified.")

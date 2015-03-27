@@ -60,3 +60,5 @@ used internally.")
     (cdr (assoc symbol
                 exported-symbols-alist
                 :test #'eq))))
+
+(defparameter *homepage* nil)
