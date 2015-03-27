@@ -39,9 +39,24 @@
 
 (asdf:defsystem :ntdoc
   :serial t
+  :license :bsd-3
+  :description "A Documentation Generator"
+  :source-control "https://github.com/ndantam/cl-ntdoc"
+  :homepage "http://ndantam.github.io/cl-ntdoc"
+  :author ("Edi Weitz"
+           "Michael Weber (SBCL patches)"
+           "Willem Broekema (AllegroCL patches)"
+           "Andreas Thiele (CCL patches)"
+           "Neil T. Dantam (ASDF Metadata Extraction)"
+           )
   :version "0.4.4"
   :components ((:file "packages")
                (:file "specials")
                (:file "util")
                (:file "output"))
-  :depends-on (:cl-who))
+  :depends-on (:cl-who)
+  :long-description
+  "NTDOC generates documentation for a Common Lisp package via
+introspection, extracting metadata from the corresponding ASDF system.
+It is based on DOCUMENTATION-TEMPLATE by Edi Weitz."
+  )

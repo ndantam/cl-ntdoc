@@ -214,7 +214,8 @@ written.  OTHER-ENTRIES, probably updated, will be returned."
     (:bsd-3 (values "3-Clause BSD" "http://opensource.org/licenses/BSD-3-Clause"))))
 
 (defun write-page-header (package-name subtitle symbols
-                          &key license repository
+                          &key license repository description
+                            author
                             (repository-link repository))
   "Writes the header of the HTML page.  Assumes that the library
 has the same name as the package.  Adds a list of all exported
@@ -251,8 +252,9 @@ symbols with links."
 <h2> ~A - ~A</h2>
 
 <blockquote>
-<br>&nbsp;<br><h3><a name=abstract class=none>Abstract</a></h3>"
-          package-name subtitle)
+<br>&nbsp;<br><h3><a name=abstract class=none>Abstract</a></h3>
+~@[<p>~A</p>~]"
+          package-name subtitle description)
 
   (when license
     (multiple-value-bind (name url) (license-info license)
@@ -270,9 +272,11 @@ symbols with links."
     <ol>
 ~{      <li><a href=\"#~A\"><code>~:*~A</code></a>
 ~}    </ol>
+
+  ~:[~;<li><a href=\"#author\">Author~P</a>~]
   <li><a href=\"#ack\">Acknowledgements</a>
 </ol>"
-          package-name symbols)
+          package-name symbols author (length author))
 
 ;; "<br>&nbsp;<br><h3><a class=none name=\"download\">Download</a></h3>
 
@@ -286,13 +290,25 @@ symbols with links."
 
 )
 
-(defun write-page-footer (&key homepage)
+(defun write-page-footer (&key homepage author)
   "Writes the footer of the HTML page."
+
+  (when author
+    (let ((author (if (stringp author) (list author) author)))
+      (format t "~&<h3><a class=none name=\"authors\">Author~P</a></h3>
+<ul>
+~{<li>~A</li>~}
+</ul>
+"
+              (length author) author)))
+
   (format t "
 
-<br>&nbsp;<br><h3><a class=none name=\"ack\">Acknowledgements</a></h3>
+<br>&nbsp;<br><h3><a class=none name=\"ack\">Acknowledgements</a></h3>")
 
-<p>
+
+
+(format t "<p>
 This documentation was prepared with <a href=\"http://weitz.de/documentation-template/\">DOCUMENTATION-TEMPLATE</a>.
 </p>
 ~@[<p><a href=\"~A\">BACK TO MY HOMEPAGE</a></p>~]
@@ -309,10 +325,13 @@ homepage))
                                                                        :filters '("HTML Files" "*.HTML;*.HTM"
                                                                                   "All Files" "*.*")
                                                                        :filter "*.HTML;*.HTM")))
-                                     (subtitle "a cool library")
-                                     homepage
-                                     license
-                                     repository
+                                     (system (asdf:find-system package))
+                                     author-homepage
+                                     (subtitle (asdf:system-description system))
+                                     (license (asdf:system-license system))
+                                     (author (asdf:system-author system))
+                                     (repository (asdf:system-source-control system))
+                                     (description (asdf:system-long-description system))
                                      ((:maybe-skip-methods-p *maybe-skip-methods-p*)
                                       *maybe-skip-methods-p*)
                                      (if-exists :supersede)
@@ -324,7 +343,8 @@ inidividual methods are skipped if the corresponding generic function
 has a documentation string."
   (when target
     (setq *target* target))
-  (let (*symbols*)
+  (let (*symbols*
+        (author (alexandria:ensure-list author)))
     (with-open-file (*standard-output* target
                                        :direction :output
                                        :if-exists if-exists
@@ -337,8 +357,11 @@ has a documentation string."
                     (setq entries (write-entry entry entries))))))))
         (write-page-header (package-name package) subtitle
                            (mapcar #'string-downcase (reverse *symbols*))
+                           :author author
                            :license license
-                           :repository repository)
+                           :repository repository
+                           :description description)
         (write-string body)
-        (write-page-footer :homepage homepage))))
+        (write-page-footer :homepage author-homepage
+                           :author author))))
   (values))
