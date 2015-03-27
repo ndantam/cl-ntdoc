@@ -297,7 +297,7 @@ symbols with links."
 
   (when author
     (let ((author (if (stringp author) (list author) author)))
-      (format t "~&<h3><a class=none name=\"authors\">Author~P</a></h3>
+      (format t "~&<h3><a class=none name=\"author\">Author~P</a></h3>
 <ul>
 ~{<li>~A</li>~}
 </ul>
