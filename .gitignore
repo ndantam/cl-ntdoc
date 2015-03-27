@@ -1,0 +1,7 @@
+*.lisp
+/CHANGELOG.txt
+/COPYING
+/README
+/README.md
+/cl-ntdoc.asd
+/doc/index.html
