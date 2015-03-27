@@ -208,10 +208,18 @@ written.  OTHER-ENTRIES, probably updated, will be returned."
                                            :qualifiers qualifiers)))))
   other-entries)
 
-(defun write-page-header (package-name subtitle symbols)
+(defun license-info (x)
+  (ecase x
+    (:bsd-2 (values "2-Clause BSD"  "http://opensource.org/licenses/BSD-2-Clause"))
+    (:bsd-3 (values "3-Clause BSD" "http://opensource.org/licenses/BSD-3-Clause"))))
+
+(defun write-page-header (package-name subtitle symbols
+                          &key license repository
+                            (repository-link repository))
   "Writes the header of the HTML page.  Assumes that the library
 has the same name as the package.  Adds a list of all exported
 symbols with links."
+  ;; html header
   (format t "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">
 <html>
 
@@ -235,47 +243,50 @@ symbols with links."
   a.noborder:focus { text-decoration: none; border: none; padding: 0; }
   pre.none { padding:5px; background-color:#ffffff }
   </style>
-</head>
+</head>" package-name subtitle)
 
-<body bgcolor=white>
+  ;; Abstract
+  (format t "<body bgcolor=white>
 
-<h2> ~2:*~A - ~A</h2>
+<h2> ~A - ~A</h2>
 
 <blockquote>
-<br>&nbsp;<br><h3><a name=abstract class=none>Abstract</a></h3>
+<br>&nbsp;<br><h3><a name=abstract class=none>Abstract</a></h3>"
+          package-name subtitle)
 
-The code comes with
-a <a
-href=\"http://www.opensource.org/licenses/bsd-license.php\">BSD-style
-license</a> so you can basically do with it whatever you want.
+  (when license
+    (multiple-value-bind (name url) (license-info license)
+      (format t "~A is available under the <a href=\"~A\">~A license</a>." package-name url name)))
+  (when repository
+    (format t "<p> <font color='green'>Download Source:</font> <code>git clone <a href=\"~A\">~A</a></code>"
+            repository-link repository))
 
-<p>
-<font color=red>Download shortcut:</font> <a href=\"http://weitz.de/files/~A.tar.gz\">http://weitz.de/files/~:*~A.tar.gz</a>.
-</blockquote>
+  (format t "</blockquote>")
 
-<br>&nbsp;<br><h3><a class=none name=\"contents\">Contents</a></h3>
+;; Contents
+(format t "<br>&nbsp;<br><h3><a class=none name=\"contents\">Contents</a></h3>
 <ol>
-  <li><a href=\"#download\">Download</a>
   <li><a href=\"#dictionary\">The ~A dictionary</a>
     <ol>
 ~{      <li><a href=\"#~A\"><code>~:*~A</code></a>
 ~}    </ol>
   <li><a href=\"#ack\">Acknowledgements</a>
-</ol>
+</ol>"
+          package-name symbols)
 
-<br>&nbsp;<br><h3><a class=none name=\"download\">Download</a></h3>
+;; "<br>&nbsp;<br><h3><a class=none name=\"download\">Download</a></h3>
 
-~2:*~A together with this documentation can be downloaded from <a
-href=\"http://weitz.de/files/~2:*~A.tar.gz\">http://weitz.de/files/~:*~A.tar.gz</a>. The
-current version is 0.1.0.
+;; ~2:*~A together with this documentation can be downloaded from <a
+;; href=\"http://weitz.de/files/~2:*~A.tar.gz\">http://weitz.de/files/~:*~A.tar.gz</a>. The
+;; current version is 0.1.0.
 
-<br>&nbsp;<br><h3><a class=none name=\"dictionary\">The ~A dictionary</a></h3>
+(format t "<br>&nbsp;<br><h3><a class=none name=\"dictionary\">The ~A dictionary</a></h3>
 
-"
-          package-name subtitle (string-downcase package-name)
-          package-name symbols))
+" package-name)
 
-(defun write-page-footer (&key (homepage *homepage*))
+)
+
+(defun write-page-footer (&key homepage)
   "Writes the footer of the HTML page."
   (format t "
 
@@ -299,6 +310,9 @@ homepage))
                                                                                   "All Files" "*.*")
                                                                        :filter "*.HTML;*.HTM")))
                                      (subtitle "a cool library")
+                                     homepage
+                                     license
+                                     repository
                                      ((:maybe-skip-methods-p *maybe-skip-methods-p*)
                                       *maybe-skip-methods-p*)
                                      (if-exists :supersede)
@@ -322,7 +336,9 @@ has a documentation string."
                   (let ((entry (or (pop entries) (return))))
                     (setq entries (write-entry entry entries))))))))
         (write-page-header (package-name package) subtitle
-                           (mapcar #'string-downcase (reverse *symbols*)))
+                           (mapcar #'string-downcase (reverse *symbols*))
+                           :license license
+                           :repository repository)
         (write-string body)
-        (write-page-footer))))
+        (write-page-footer :homepage homepage))))
   (values))
