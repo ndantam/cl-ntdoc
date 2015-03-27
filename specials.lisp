@@ -27,7 +27,7 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(in-package :documentation-template)
+(in-package :ntdoc)
 
 (defvar *target* nil
   "Where to output the HTML page.  If this value is not NIL, it will
@@ -50,7 +50,7 @@ used internally.")
 (defvar *hyperdoc-base-uri* "http://weitz.de/documentation-template/")
 
 (let ((exported-symbols-alist
-       (loop for symbol being the external-symbols of :documentation-template
+       (loop for symbol being the external-symbols of :ntdoc
              collect (cons symbol
                            (concatenate 'string
                                         "#"

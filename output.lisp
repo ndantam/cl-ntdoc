@@ -27,13 +27,13 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(in-package :documentation-template)
+(in-package :ntdoc)
 
 (defun write-entry-header (name type &key (write-name-p t))
   "Writes the header for a documentation entry of name NAME and
 type TYPE.  The HTML anchor will only get a 'name' attribute if
 WRITE-NAME-P is true and NAME is not a SETF name."
-  (format t "~%~%<!-- Entry for ~A -->~%~%<p><br>[~A]<br><a class=none~@[ name='~A'~]>" 
+  (format t "~%~%<!-- Entry for ~A -->~%~%<p><br>[~A]<br><a class=none~@[ name='~A'~]>"
           name type (and write-name-p (atom name) (string-downcase name))))
 
 (defun write-entry-footer (name doc-string)
@@ -59,7 +59,7 @@ SYMBOL."
   "Writes a full documentation entry for the class SYMBOL."
   (write-entry-header symbol (if (subtypep symbol 'condition)
                                "Condition type" "Standard class"))
-                               
+
   (format t "<b>~A</b></a>" (string-downcase symbol))
   (write-entry-footer symbol doc-string))
 
@@ -139,7 +139,7 @@ full header."
                                other-entries)))
          (resultp (and (not setfp)
                        (null (intersection '(:before :after)
-                                           qualifiers)))))    
+                                           qualifiers)))))
     (cond (signature-only-p
            (write-string "<a class=none>"))
           (t
@@ -213,7 +213,7 @@ written.  OTHER-ENTRIES, probably updated, will be returned."
 has the same name as the package.  Adds a list of all exported
 symbols with links."
   (format t "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">
-<html> 
+<html>
 
 <head>
   <meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">
@@ -223,16 +223,16 @@ symbols with links."
   h3, h4 { text-decoration: underline; }
   a { text-decoration: none; padding: 1px 2px 1px 2px; }
   a:visited { text-decoration: none; padding: 1px 2px 1px 2px; }
-  a:hover { text-decoration: none; padding: 1px 1px 1px 1px; border: 1px solid #000000; } 
+  a:hover { text-decoration: none; padding: 1px 1px 1px 1px; border: 1px solid #000000; }
   a:focus { text-decoration: none; padding: 1px 2px 1px 2px; border: none; }
   a.none { text-decoration: none; padding: 0; }
-  a.none:visited { text-decoration: none; padding: 0; } 
-  a.none:hover { text-decoration: none; border: none; padding: 0; } 
-  a.none:focus { text-decoration: none; border: none; padding: 0; } 
-  a.noborder { text-decoration: none; padding: 0; } 
-  a.noborder:visited { text-decoration: none; padding: 0; } 
-  a.noborder:hover { text-decoration: none; border: none; padding: 0; } 
-  a.noborder:focus { text-decoration: none; border: none; padding: 0; }  
+  a.none:visited { text-decoration: none; padding: 0; }
+  a.none:hover { text-decoration: none; border: none; padding: 0; }
+  a.none:focus { text-decoration: none; border: none; padding: 0; }
+  a.noborder { text-decoration: none; padding: 0; }
+  a.noborder:visited { text-decoration: none; padding: 0; }
+  a.noborder:hover { text-decoration: none; border: none; padding: 0; }
+  a.noborder:focus { text-decoration: none; border: none; padding: 0; }
   pre.none { padding:5px; background-color:#ffffff }
   </style>
 </head>

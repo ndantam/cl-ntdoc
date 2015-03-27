@@ -27,7 +27,7 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(in-package :documentation-template)
+(in-package :ntdoc)
 
 ;;; For the purpose of this file, an "entry" is a list of four or five
 ;;; symbols - a name, a keyword for the kind of the entry, a lambda
@@ -43,7 +43,7 @@
   (excl:arglist function)
   #+ccl
   (ccl:arglist function))
-    
+
 (defun symbol-constant-p (symbol)
   "Returns true if SYMBOL is a constant."
   #+:lispworks (sys:symbol-constant-p symbol)
@@ -108,12 +108,12 @@ entry for each of its methods if NAME names a generic function."
              (typep (fdefinition name) 'standard-generic-function))
     (let* ((lambda-list (function-lambda-list name))
            (generic-function-documentation (documentation name 'function))
-           (generic-function-entry           
+           (generic-function-entry
             (list name :generic-function lambda-list
                   generic-function-documentation)))
       (cond ((and generic-function-documentation *maybe-skip-methods-p*)
              (list generic-function-entry))
-            (t (cons generic-function-entry                     
+            (t (cons generic-function-entry
                      (loop for method in (generic-function-methods (fdefinition name))
                            collect (list name :method lambda-list
                                          (documentation method t)

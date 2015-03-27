@@ -29,15 +29,15 @@
 
 (in-package :cl-user)
 
-(defpackage :documentation-template-asd
+(defpackage :ntdoc-asd
   (:use :cl :asdf))
 
-(in-package :documentation-template-asd)
+(in-package :ntdoc-asd)
 
 #+:sbcl
 (require :sb-introspect)
 
-(asdf:defsystem :documentation-template
+(asdf:defsystem :ntdoc
   :serial t
   :version "0.4.4"
   :components ((:file "packages")
