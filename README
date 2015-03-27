@@ -1,0 +1,9 @@
+OVERVIEW
+========
+NTDOC generates documentation for a Common Lisp package via
+introspection, extracting metadata from the corresponding ASDF
+system. It is based on DOCUMENTATION-TEMPLATE by Edi Weitz.
+
+DOCUMENTATION
+=============
+http://ndantam.github.io/cl-ntdoc
