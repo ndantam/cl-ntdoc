@@ -32,6 +32,8 @@
 (defpackage :ntdoc
   (:use :cl
         :cl-who
+        :alexandria
+        :sycamore
         #+:lispworks :clos
         #+:sbcl :sb-mop
         #+:allegro :mop)

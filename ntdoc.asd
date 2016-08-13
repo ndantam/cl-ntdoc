@@ -53,8 +53,9 @@
   :components ((:file "packages")
                (:file "specials")
                (:file "util")
-               (:file "output"))
-  :depends-on (:cl-who :alexandria)
+               (:file "output")
+               (:file "markdown"))
+  :depends-on (:cl-who :alexandria :sycamore)
   :long-description
   "NTDOC generates documentation for a Common Lisp package via
 introspection, extracting metadata from the corresponding ASDF system.
