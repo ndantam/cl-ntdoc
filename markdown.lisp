@@ -36,7 +36,14 @@
 (defvar *md-key*)
 (defvar *md-package*)
 
+(defvar *md-docstring-hash*)
 
+(defun md-docstring-hash (symbol type)
+  (gethash (cons symbol type) *md-docstring-hash*))
+
+(defun (setf md-docstring-hash) (docstring symbol type)
+  (setf (gethash (cons symbol type) *md-docstring-hash*)
+        docstring))
 
 (defun md-format (control-string &rest args)
   (apply #'format *output* control-string args))
@@ -117,32 +124,63 @@ the end if RESULTP is true."
 
 (defgeneric markdown-entry (symbol type arguments docstring &optional types other))
 
+(defun md-entry-key (symbol type)
+  (with-output-to-string (out)
+    (let ((str (rope-string (rope *md-key* "_" *md-package* "_" type "_" symbol))))
+      (loop for c across str
+         do
+           (case c
+             (#\* (write-string "_STAR_" out))
+             (#\+ (write-string "_PLUS_" out))
+             (#\> (write-string "_GT_" out))
+             (#\< (write-string "_LT_" out))
+             (#\/ (write-string "_DIV_" out))
+             (#\( (write-string "_LP_" out))
+             (#\) (write-string "_RP_" out))
+             (#\Space (write-string "_SP_" out))
+             (#\_ (write-string "__" out))
+             (otherwise (write-char c out)))))))
+
+
 (defun md-entry-header (symbol type)
-  (md-header 2 symbol (rope *md-key* "_" *md-package* "_" type "_" symbol))
-  (md-format "~&<i>[~A]</i>~%~%" (string-downcase type)))
+  (let ((symbol (format nil "~A" symbol)))
+    (md-header 2 symbol (md-entry-key symbol type))
+    (md-format "~&<i>[~A]</i>~%~%" (string-downcase type))))
 
 
+(defun check-docstring (symbol type docstring)
+  (unless docstring
+    (format *error-output* "~&~A ~A is not documented.~%"
+            type symbol)))
 
+(defun index-markdown-entry (symbol type arguments docstring &optional types other)
+  (declare (ignore arguments types other))
+  (setf (md-docstring-hash symbol type) docstring))
 
 (defmethod markdown-entry (symbol (type (eql :constant)) arguments docstring &optional types other)
+  (check-docstring symbol type docstring)
   (md-entry-header symbol type)
   (md-docstring docstring))
 
 (defmethod markdown-entry (symbol (type (eql :special-var)) arguments docstring &optional types other)
+  (check-docstring symbol type docstring)
   (md-entry-header symbol type)
   (md-docstring docstring))
 
 (defmethod markdown-entry (symbol (type (eql :macro)) arguments docstring &optional types other)
+  (check-docstring symbol type docstring)
   (md-entry-header symbol type)
   (md-docstring docstring))
 
 (defmethod markdown-entry (symbol (type (eql :function)) arguments docstring &optional types other)
+  (check-docstring symbol type docstring)
   (md-entry-header symbol type)
   (md-format "    ~A: " symbol)
   (md-lambda-list arguments)
   (md-docstring docstring))
 
 (defmethod markdown-entry (symbol (type (eql :generic-function)) arguments docstring &optional types other)
+  (check-docstring symbol type docstring)
   (md-entry-header symbol type)
   (md-format "    ~A: " symbol)
   (md-lambda-list arguments)
@@ -152,6 +190,12 @@ the end if RESULTP is true."
   (md-entry-header symbol type)
   (md-format "    ~A: " symbol)
   (md-lambda-list arguments :specializers types)
+  (md-docstring (or docstring
+                    (md-docstring-hash symbol :generic-function))))
+
+(defmethod markdown-entry (symbol (type (eql :class)) arguments docstring &optional types other)
+  (md-entry-header symbol type)
+  (md-format "    ~A: " symbol)
   (md-docstring docstring))
 
 
@@ -188,23 +232,23 @@ has a documentation string."
                    ((or string symbol)
                     (asdf:find-system system))))
          (key (or key (car packages)))
+         (*md-docstring-hash* (make-hash-table :test #'equal))
          (*md-key* key))
     (labels ((helper ()
                (md-header 1 title key)
                (when toc
                  (md-format "~&[TOC]~%~%"))
                (map nil #'output-package packages))
+             (map-entries (function entries)
+               (map nil (lambda (entry) (apply function entry)) entries))
              (output-package (package)
                (let ((entries (collect-all-doc-entries package))
                      (*md-package* package))
                  (md-header 1 (rope "The " package " dictionary")
                             (rope key "_" package))
-                 (map nil (lambda (entry)
-                            ;(print entry)
-                            ;(print (length entry))
-                            (apply #'markdown-entry entry)
-                            )
-                      entries))))
+
+                 (map-entries #'index-markdown-entry entries)
+                 (map-entries #'markdown-entry entries))))
       (etypecase target
         (null
          (with-output-to-string (*output*)
