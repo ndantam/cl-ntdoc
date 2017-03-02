@@ -209,9 +209,11 @@ written.  OTHER-ENTRIES, probably updated, will be returned."
   other-entries)
 
 (defun license-info (x)
-  (ecase x
+  (case x
     (:bsd-2 (values "2-Clause BSD"  "http://opensource.org/licenses/BSD-2-Clause"))
-    (:bsd-3 (values "3-Clause BSD" "http://opensource.org/licenses/BSD-3-Clause"))))
+    (:bsd-3 (values "3-Clause BSD" "http://opensource.org/licenses/BSD-3-Clause"))
+    (otherwise (values x nil))))
+
 
 (defun write-page-header (package-name subtitle symbols
                           &key license repository description

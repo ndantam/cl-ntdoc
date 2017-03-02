@@ -226,7 +226,6 @@ TARGET.  If MAYBE-SKIP-METHODS-P is true, documentation entries for
 inidividual methods are skipped if the corresponding generic function
 has a documentation string."
   (let* (;*symbols*
-         ;(author (alexandria:ensure-list author))
          (packages (ensure-list packages))
          (title (or title (car packages)))
          (system (etypecase system
@@ -235,12 +234,40 @@ has a documentation string."
                     (asdf:find-system system))))
          (key (or key (car packages)))
          (*md-docstring-hash* (make-hash-table :test #'equal))
-         (*md-key* key))
+         (*md-key* key)
+         (homepage (asdf:system-homepage system))
+         (repo (asdf:system-source-control system))
+         (subtitle (asdf:system-description system))
+         (description (asdf:system-long-description system))
+         (license (asdf:system-license system))
+         (authors (alexandria:ensure-list(asdf:system-author  system))))
+
     (labels ((helper ()
+               ;; header
                (md-header 1 title key)
+               (when subtitle
+                 (md-format "~&*~A*~%~%" subtitle))
+               (when homepage
+                 (md-format "~&* **Homepage:** [~A](~A)~%" homepage homepage))
+               (when repo
+                 (md-format "~&* **Source Repository:** [~A](~A)~%" repo repo))
+               (when license
+                 (multiple-value-bind (name url) (license-info license)
+                   (if url
+                       (md-format "~&* **License:** [~A](~A)" name url)
+                       (md-format "~&* **License:** ~A" name ))))
+               (when description
+                 (md-format "~&~%~A~%~%" description))
                (when toc
                  (md-format "~&[TOC]~%~%"))
-               (map nil #'output-package packages))
+               ;; body
+               (map nil #'output-package packages)
+               ;; Footer
+               (when authors
+                 (md-header 1 "Authors" "authors")
+                 (dolist (a authors)
+                   (md-format "~&* ~A~%" a)))
+               )
              (map-entries (function entries)
                (map nil (lambda (entry) (apply function entry)) entries))
              (output-package (package)
