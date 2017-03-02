@@ -86,7 +86,7 @@ calls itself recursive if needed."
                (cond ((consp part)
                       ;; a destructuring lambda list - recurse
                       (md-write-char #\()
-                      (md-write-lambda-list* part)
+                      (md-lambda-list* part)
                       (md-write-char #\)))
                      ((member part '(&key &optional &rest &allow-other-keys &aux &environment &whole))
                       ;; marks these between <tt> and </tt>
