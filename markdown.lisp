@@ -132,11 +132,13 @@ the end if RESULTP is true."
            (case c
              (#\* (write-string "_STAR_" out))
              (#\+ (write-string "_PLUS_" out))
+             (#\- (write-string "_MINUS_" out))
              (#\> (write-string "_GT_" out))
              (#\< (write-string "_LT_" out))
              (#\/ (write-string "_DIV_" out))
              (#\( (write-string "_LP_" out))
              (#\) (write-string "_RP_" out))
+             (#\% (write-string "_PCT_" out))
              (#\Space (write-string "_SP_" out))
              (#\_ (write-string "__" out))
              (otherwise (write-char c out)))))))
