@@ -4,3 +4,7 @@
 /configure
 /install-sh
 /missing
+/config.log
+/Makefile
+/config.status
+/ntdoc-*.tar.gz
