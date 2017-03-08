@@ -196,8 +196,8 @@ the end if RESULTP is true."
                     (md-docstring-hash symbol :generic-function))))
 
 (defmethod markdown-entry (symbol (type (eql :class)) arguments docstring &optional types other)
-  (md-entry-header symbol type)
-  (md-format "    ~A: " symbol)
+  (md-entry-header symbol (if (subtypep symbol 'condition)
+                              "Condition type" "Standard class"))
   (md-docstring docstring))
 
 
