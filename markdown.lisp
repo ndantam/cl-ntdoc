@@ -160,21 +160,27 @@ the end if RESULTP is true."
   (setf (md-docstring-hash symbol type) docstring))
 
 (defmethod markdown-entry (symbol (type (eql :constant)) arguments docstring &optional types other)
+  (declare (ignore arguments types other))
   (check-docstring symbol type docstring)
   (md-entry-header symbol type)
   (md-docstring docstring))
 
 (defmethod markdown-entry (symbol (type (eql :special-var)) arguments docstring &optional types other)
+  (declare (ignore arguments types other))
   (check-docstring symbol type docstring)
   (md-entry-header symbol type)
   (md-docstring docstring))
 
 (defmethod markdown-entry (symbol (type (eql :macro)) arguments docstring &optional types other)
+  (declare (ignore types other))
   (check-docstring symbol type docstring)
   (md-entry-header symbol type)
+  (md-format "    ~A: " symbol)
+  (md-lambda-list arguments)
   (md-docstring docstring))
 
 (defmethod markdown-entry (symbol (type (eql :function)) arguments docstring &optional types other)
+  (declare (ignore types other))
   (check-docstring symbol type docstring)
   (md-entry-header symbol type)
   (md-format "    ~A: " symbol)
@@ -182,6 +188,7 @@ the end if RESULTP is true."
   (md-docstring docstring))
 
 (defmethod markdown-entry (symbol (type (eql :generic-function)) arguments docstring &optional types other)
+  (declare (ignore types other))
   (check-docstring symbol type docstring)
   (md-entry-header symbol type)
   (md-format "    ~A: " symbol)
@@ -189,6 +196,7 @@ the end if RESULTP is true."
   (md-docstring docstring))
 
 (defmethod markdown-entry (symbol (type (eql :method)) arguments docstring &optional types other)
+  (declare (ignore other))
   (md-entry-header symbol type)
   (md-format "    ~A: " symbol)
   (md-lambda-list arguments :specializers types)
@@ -196,6 +204,7 @@ the end if RESULTP is true."
                     (md-docstring-hash symbol :generic-function))))
 
 (defmethod markdown-entry (symbol (type (eql :class)) arguments docstring &optional types other)
+  (declare (ignore arguments types other))
   (md-entry-header symbol (if (subtypep symbol 'condition)
                               "Condition type" "Standard class"))
   (md-docstring docstring))
@@ -273,6 +282,7 @@ has a documentation string."
              (output-package (package)
                (let ((entries (collect-all-doc-entries package))
                      (*md-package* package))
+                 (print entries)
                  (md-header 1 (rope "The " package " dictionary")
                             (rope key "_" package))
 
